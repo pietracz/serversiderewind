@@ -1,32 +1,45 @@
 import React from 'react';
 
 import { Metadata } from 'next';
-import { getPost } from '@/src/actions/get/posts';
+import { getPost, getAllPosts } from '@/src/actions/get/posts';
 import { getComments } from '@/src/actions/get/comments';
+import { Params } from '@/src/types/params';
+
+/* Pre-caching of possible post-ids */
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+
+  /* URL parameter need to be converted to a string value */
+  return posts.map(({ id }) => ({ id: String(id) }));
+}
 
 export async function generateMetadata({
   params,
 }: {
-  params: { id: number };
+  params: Params;
 }): Promise<Metadata> {
-  const post = await getPost(params.id);
+  /* destructure params to get the id value */
+  const { id } = await params;
+  const post = await getPost(Number(id));
 
   return {
     title: post.title,
     description: post.body,
-    /* openGraph: {
+    openGraph: {
       images: [
         {
-          url: `https://jsonplaceholder.typicode.com/posts/${params.id}`,
+          url: `https://jsonplaceholder.typicode.com/posts/${id}`,
         },
       ],
-    }, */
+    },
   };
 }
 
-const Post = async ({ params }: { params: { id: number } }) => {
-  const post = await getPost(params.id);
-  const comments = await getComments(params.id);
+const Post = async ({ params }: { params: Params }) => {
+  /* destructure params to get the id value */
+  const { id } = await params;
+  const post = await getPost(Number(id));
+  const comments = await getComments(Number(id));
 
   return (
     <div key={post.id}>

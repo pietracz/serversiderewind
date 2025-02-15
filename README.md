@@ -17,6 +17,6 @@ This repository is for figuring out better ways of structuring a project and rep
 11. [x] Creating path and page for posts
 12. [x] Creating page for slug of a post
 13. [x] Adding each comment for a post
-14. [ ] Adding getStaticProps to posts slug page
+14. [x] Adding generateStaticParams to posts slug page
 15. [ ] Adding simple styling for the pages
 16. [ ] Adding SEO related data and files
