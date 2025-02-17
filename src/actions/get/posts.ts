@@ -1,4 +1,5 @@
 import { Post, Posts } from '@/src/types/posts';
+import { notFound } from 'next/navigation';
 
 export async function getAllPosts() {
   try {
@@ -17,7 +18,12 @@ export async function getPost(id: number) {
       `https://jsonplaceholder.typicode.com/posts/${id}`
     );
     const post = await response.json();
-    return post as Post;
+
+    if (response.status === 404) {
+      notFound();
+    } else {
+      return post as Post;
+    }
   } catch (error) {
     console.error('Error getting post', error);
     throw error;
